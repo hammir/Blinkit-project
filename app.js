@@ -5,6 +5,7 @@ require("dotenv").config();
 const {connectDb} = require('./config/mongooseConnect');
 const indexrouter = require("./router/indexRouter");
 const authrouter = require("./router/authRoute");
+const adminrouter = require("./router/adminRoute");
 const passport = require("passport");
 const expressSession = require("express-session");
 require('./config/googleStrategy');
@@ -27,6 +28,7 @@ app.use(passport.session());
 
 app.use("/", indexrouter);
 app.use("/auth", authrouter);
+app.use("/admin", adminrouter);
 
 app.listen(process.env.PORT, function () {
   console.log("listening on port " + process.env.PORT);
