@@ -3,6 +3,7 @@ const router = express.Router();
 const { adminModel } = require("../models/adminModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const authAdmin = require("../Middlewares/admin");
 
 if (
   typeof process.env.NODE_ENV !== undefined &&
@@ -49,7 +50,7 @@ if (
       let validAdmin = await bcrypt.compare(password, admin.password);
       if (validAdmin) {
         let token = jwt.sign({ email: admin.email }, process.env.JWT_KEY);
-        res.cookie("Admin_Login_Token", token);
+         res.cookie("Admin_Login_Token", token);
         res.status(200).redirect("/admin/dashboard");
         console.log("Admin Logged In Successfully");
       } else {
@@ -58,9 +59,16 @@ if (
     }
   });
 
-  router.get("/dashboard", (req, res) => {
+  router.get("/dashboard",authAdmin ,(req, res) => {
     res.render("admin_dashboard");
   });
+
+router.get("/logout",authAdmin, (req,res)=>{
+  res.cookie("Admin_Login_Token","");
+  res.redirect("/admin/login");
+})
+
+
 }
 
 module.exports = router;
